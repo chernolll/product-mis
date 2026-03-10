@@ -1,0 +1,43 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './pages/login';
+import AdminLayout from './pages/admin/layout';
+import CatalogPage from './pages/admin/catalog';
+import ProcessPage from './pages/admin/process';
+import ProcessEditPage from './pages/admin/process/edit';
+import { useAuthStore } from './store/authStore';
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+};
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="/admin/catalog" replace />} />
+          <Route path="catalog" element={<CatalogPage />} />
+          <Route path="process" element={<ProcessPage />} />
+          <Route path="process/edit" element={<ProcessEditPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
