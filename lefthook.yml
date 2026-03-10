@@ -1,0 +1,18 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      run: biome check --write --no-errors-on-unmatched --staged
+
+pre-push:
+  parallel: true
+  commands:
+    biome-check:
+      run: pnpm biome check --no-errors-on-unmatched {all_files}
+    type-check:
+      run: pnpm lint:fix
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm commitlint --edit {1}
