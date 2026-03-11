@@ -1,8 +1,8 @@
 import { ChevronDown, ChevronRight, Edit2, FileText, Folder, FolderOpen, FolderTree, Loader2, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { addCatalog, type CatalogItem, deleteCatalog, updateCatalog } from '../../../api/catalog';
 import { useCatalogStore } from '../../../store/catalogStore';
-import { toast } from 'sonner';
 
 export default function CatalogPage() {
   const { catalogs, loading, fetchCatalogs, selectedCatalogId, setSelectedCatalogId } = useCatalogStore();

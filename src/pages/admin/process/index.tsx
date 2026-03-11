@@ -2,11 +2,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, ChevronRight, Edit2, Eye, FileText, Folder, FolderOpen, Image as ImageIcon, Loader2, Plus, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import type { CatalogItem } from '../../../api/catalog';
 import { deleteProcess, type ProcessRecord } from '../../../api/process';
 import { useCatalogStore } from '../../../store/catalogStore';
 import { useProcessStore } from '../../../store/processStore';
-import { toast } from 'sonner';
 
 export default function ProcessPage() {
   const { catalogs, fetchCatalogs, selectedCatalogId, setSelectedCatalogId } = useCatalogStore();
