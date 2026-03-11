@@ -423,7 +423,7 @@ export default function ProcessEditPage() {
         <div className="flex-1 relative flex flex-col bg-[#060606] overflow-hidden" ref={containerRef} onClick={() => setActiveElementId(null)}>
           {/* Toolbar */}
           <div
-            className="absolute top-6 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl flex items-center p-1.5 gap-1 z-20"
+            className="w-fit mx-auto mt-1.75 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl flex items-center p-1.5 gap-1 z-20"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -504,7 +504,7 @@ export default function ProcessEditPage() {
           </div>
 
           {/* Editor Area */}
-          <div className="flex-1 overflow-auto pt-6 custom-scrollbar">
+          <div className="flex-1 overflow-auto custom-scrollbar">
             {originalImageUrl ? (
               <div
                 style={{
@@ -601,7 +601,15 @@ export default function ProcessEditPage() {
                                 style={{ overflow: 'visible', transform: `scaleX(${ele.scaleX || 1}) scaleY(${ele.scaleY || 1})` }}
                               >
                                 <defs>
-                                  <marker id={`arrowhead-${ele.id}`} markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                  <marker
+                                    id={`arrowhead-${ele.id}`}
+                                    markerUnits="strokeWidth"
+                                    markerWidth="10"
+                                    markerHeight="7"
+                                    refX="9"
+                                    refY="3.5"
+                                    orient="auto"
+                                  >
                                     <polygon points="0 0, 10 3.5, 0 7" fill={ele.color} />
                                   </marker>
                                 </defs>
