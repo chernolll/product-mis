@@ -18,6 +18,7 @@ import { domToJpeg } from 'modern-screenshot';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Rnd } from 'react-rnd';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { addProcess, getUploadUrl, queryProcess, updateProcess, uploadToOSS } from '../../../api/process';
 import { useProcessStore } from '../../../store/processStore';
@@ -365,13 +366,18 @@ export default function ProcessEditPage() {
         <div className="w-1/6 min-w-75 border-r border-zinc-800 flex flex-col bg-zinc-900 shrink-0">
           <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-950">
             <h2 className="font-semibold text-zinc-100">步骤文案</h2>
-            <button
-              type="button"
-              onClick={() => setSteps([...steps, { title: '', description: '' }])}
-              className="text-indigo-400 hover:text-indigo-300 p-1 hover:bg-indigo-500/20 rounded transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setSteps([...steps, { title: '', description: '' }])}
+                  className="text-indigo-400 hover:text-indigo-300 p-1 hover:bg-indigo-500/20 rounded transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>添加标题</TooltipContent>
+            </Tooltip>
           </div>
           <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
             {steps.map((step, index) => (
