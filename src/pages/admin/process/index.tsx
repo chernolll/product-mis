@@ -6,6 +6,7 @@ import type { CatalogItem } from '../../../api/catalog';
 import { deleteProcess, type ProcessRecord } from '../../../api/process';
 import { useCatalogStore } from '../../../store/catalogStore';
 import { useProcessStore } from '../../../store/processStore';
+import { toast } from 'sonner';
 
 export default function ProcessPage() {
   const { catalogs, fetchCatalogs, selectedCatalogId, setSelectedCatalogId } = useCatalogStore();
@@ -65,10 +66,10 @@ export default function ProcessPage() {
         if (res.isSuccess && selectedCatalogId) {
           fetchProcesses(selectedCatalogId);
         } else {
-          alert('删除步骤失败');
+          toast.error('删除步骤失败');
         }
       } catch (_e) {
-        alert('删除步骤时发生错误');
+        toast.error('删除步骤时发生错误');
       }
     }
   };

@@ -2,6 +2,7 @@ import { ChevronDown, ChevronRight, Edit2, FileText, Folder, FolderOpen, FolderT
 import { useEffect, useState } from 'react';
 import { addCatalog, type CatalogItem, deleteCatalog, updateCatalog } from '../../../api/catalog';
 import { useCatalogStore } from '../../../store/catalogStore';
+import { toast } from 'sonner';
 
 export default function CatalogPage() {
   const { catalogs, loading, fetchCatalogs, selectedCatalogId, setSelectedCatalogId } = useCatalogStore();
@@ -27,7 +28,7 @@ export default function CatalogPage() {
 
   const handleAdd = (parentId: number | null, level: number) => {
     if (level >= 3) {
-      alert('最多允许创建3级目录。');
+      toast.warning('最多允许创建3级目录。');
       return;
     }
     setModalMode('add');
@@ -46,7 +47,7 @@ export default function CatalogPage() {
   const handleDelete = async (id: number) => {
     const catalogToDelete = catalogs.find((c) => c.catalogId === id) || findCatalog(catalogs, id);
     if (catalogToDelete?.children && catalogToDelete.children.length > 0) {
-      alert('不能删除包含子目录的目录。');
+      toast.warning('不能删除包含子目录的目录。');
       return;
     }
 
@@ -59,10 +60,10 @@ export default function CatalogPage() {
             setSelectedCatalogId(null);
           }
         } else {
-          alert('删除目录失败');
+          toast.error('删除目录失败');
         }
       } catch (e) {
-        alert('删除目录时发生错误');
+        toast.error('删除目录时发生错误');
       }
     }
   };
@@ -81,7 +82,7 @@ export default function CatalogPage() {
   const handleSave = async () => {
     if (!catalogName.trim()) return;
     if (catalogName.trim().length > 10) {
-      alert('目录名称最多10个字符');
+      toast.warning('目录名称最多10个字符');
       return;
     }
     try {
@@ -95,7 +96,7 @@ export default function CatalogPage() {
           setIsModalOpen(false);
           fetchCatalogs();
         } else {
-          alert(res?.message || '操作失败');
+          toast.error(res?.message || '操作失败');
         }
       } else {
         const res = await updateCatalog({
@@ -106,11 +107,11 @@ export default function CatalogPage() {
           setIsModalOpen(false);
           fetchCatalogs();
         } else {
-          alert(res?.message || '操作失败');
+          toast.error(res?.message || '操作失败');
         }
       }
     } catch (_e) {
-      alert('保存目录时发生错误');
+      toast.error('保存目录时发生错误');
     }
   };
 

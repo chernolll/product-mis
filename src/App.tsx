@@ -5,13 +5,13 @@
 
 import type React from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import CatalogPage from './pages/admin/catalog';
 import AdminLayout from './pages/admin/layout';
 import ProcessPage from './pages/admin/process';
 import ProcessEditPage from './pages/admin/process/edit';
 import LoginPage from './pages/login';
 import { useAuthStore } from './store/authStore';
-import { TooltipProvider } from '@/components/ui/tooltip';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -22,8 +22,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 export default function App() {
   return (
     <BrowserRouter>
-      <TooltipProvider>
-        <Routes>
+      <TooltipProvider>        <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route

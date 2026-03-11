@@ -2,7 +2,7 @@ import { FolderTree, Image as ImageIcon, LogOut, X } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-
+import { Toaster } from '@/components/ui/sonner';
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { logout } = useAuthStore();
@@ -85,6 +85,8 @@ export default function AdminLayout() {
           <Outlet />
         </div>
       </main>
+
+      <Toaster position='top-center' />
     </div>
   );
 }

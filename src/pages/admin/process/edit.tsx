@@ -18,8 +18,9 @@ import { domToJpeg } from 'modern-screenshot';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Rnd } from 'react-rnd';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { addProcess, getUploadUrl, queryProcess, updateProcess, uploadToOSS } from '../../../api/process';
 import { useProcessStore } from '../../../store/processStore';
 
@@ -245,13 +246,9 @@ export default function ProcessEditPage() {
 
   const handleSave = async () => {
     if (!originalImageUrl) {
-      alert('请上传一张原始图片。');
+      toast.warning('请上传一张原始图片。');
       return;
     }
-    // if (steps.some(s => !s.title || !s.description)) {
-    //   alert('请填写所有步骤的标题和描述。');
-    //   return;
-    // }
 
     setSaving(true);
     try {
@@ -311,13 +308,15 @@ export default function ProcessEditPage() {
       if (processId) {
         const res = await updateProcess({ ...payload, processDetailId: Number(processId) });
         if (!res.isSuccess) throw new Error(res.message || '更新步骤失败');
+        toast.success('保存成功');
       } else {
         const res = await addProcess(payload);
         if (!res.isSuccess) throw new Error(res.message || '添加步骤失败');
+        toast.success('添加成功');
       }
     } catch (e: any) {
       console.error(e);
-      alert('保存步骤失败');
+      toast.error('保存步骤失败');
     } finally {
       setSaving(false);
     }
