@@ -1,4 +1,4 @@
-import { FolderTree, Image as ImageIcon, LogOut, Menu, X } from 'lucide-react';
+import { FolderTree, Image as ImageIcon, LogOut, X } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
