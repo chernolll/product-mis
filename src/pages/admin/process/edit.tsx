@@ -313,6 +313,7 @@ export default function ProcessEditPage() {
         const res = await addProcess(payload);
         if (!res.isSuccess) throw new Error(res.message || '添加步骤失败');
         toast.success('添加成功');
+        navigate('/admin/process');
       }
     } catch (e: any) {
       console.error(e);
