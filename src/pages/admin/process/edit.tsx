@@ -710,8 +710,6 @@ export default function ProcessEditPage() {
               )}
             </div>
           </div>
-
-          
         </div>
       </div>
 
