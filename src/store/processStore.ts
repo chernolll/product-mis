@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ProcessRecord, queryProcess } from '../api/process';
+import { type ProcessRecord, queryProcess } from '../api/process';
 
 interface ProcessState {
   processes: ProcessRecord[];

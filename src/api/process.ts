@@ -1,4 +1,4 @@
-import { api, ApiResponse } from './axios';
+import { type ApiResponse, api } from './axios';
 
 export interface ProcessRecord {
   processDetailId: number;

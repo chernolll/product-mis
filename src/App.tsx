@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/login';
-import AdminLayout from './pages/admin/layout';
+import type React from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import CatalogPage from './pages/admin/catalog';
+import AdminLayout from './pages/admin/layout';
 import ProcessPage from './pages/admin/process';
 import ProcessEditPage from './pages/admin/process/edit';
+import LoginPage from './pages/login';
 import { useAuthStore } from './store/authStore';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {

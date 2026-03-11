@@ -1,8 +1,8 @@
 import express from 'express';
-import { createServer as createViteServer } from 'vite';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createServer as createViteServer } from 'vite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -16,7 +16,7 @@ async function startServer() {
     createProxyMiddleware({
       target: 'http://192.168.2.81:8999',
       changeOrigin: true,
-    })
+    }),
   );
 
   app.use(
@@ -24,7 +24,7 @@ async function startServer() {
     createProxyMiddleware({
       target: 'http://192.168.2.81:8999',
       changeOrigin: true,
-    })
+    }),
   );
 
   if (process.env.NODE_ENV !== 'production') {

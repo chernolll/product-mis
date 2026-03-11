@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
-import { checkKey } from '../../api/catalog';
 import { KeyRound, Loader2 } from 'lucide-react';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { checkKey } from '../../api/catalog';
+import { useAuthStore } from '../../store/authStore';
 
 export default function LoginPage() {
   const [key, setKey] = useState('');
@@ -11,13 +12,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { setApiKey, isAuthenticated } = useAuthStore();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      verifyKey();
-    }
-  }, [isAuthenticated]);
-
-  const verifyKey = async () => {
+  const verifyKey = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -28,13 +23,18 @@ export default function LoginPage() {
         setError('Invalid API Key');
         useAuthStore.getState().logout();
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to verify key');
       useAuthStore.getState().logout();
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+  useEffect(() => {
+    if (isAuthenticated) {
+      verifyKey();
+    }
+  }, [isAuthenticated, verifyKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

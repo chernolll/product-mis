@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
 import { FolderTree, Image as ImageIcon, LogOut, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -16,12 +16,7 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-zinc-950 flex">
       {/* Mobile Sidebar Overlay */}
-      {!isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
-          onClick={() => setIsSidebarOpen(true)}
-        />
-      )}
+      {!isSidebarOpen && <div className="fixed inset-0 bg-black/50 z-20 lg:hidden" onClick={() => setIsSidebarOpen(true)} />}
 
       {/* Sidebar */}
       <aside
@@ -36,10 +31,7 @@ export default function AdminLayout() {
             </div>
             <span className="font-semibold text-zinc-100 truncate">管理系统</span>
           </div>
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 lg:hidden"
-          >
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 lg:hidden">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -49,9 +41,7 @@ export default function AdminLayout() {
             to="/admin/catalog"
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${
-                isActive
-                  ? 'bg-indigo-500/10 text-indigo-400 font-medium'
-                  : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100'
+                isActive ? 'bg-indigo-500/10 text-indigo-400 font-medium' : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100'
               }`
             }
           >
@@ -63,9 +53,7 @@ export default function AdminLayout() {
             to="/admin/process"
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${
-                isActive
-                  ? 'bg-indigo-500/10 text-indigo-400 font-medium'
-                  : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100'
+                isActive ? 'bg-indigo-500/10 text-indigo-400 font-medium' : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100'
               }`
             }
           >
@@ -88,10 +76,7 @@ export default function AdminLayout() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0">
         <header className="h-16 bg-zinc-900 border-b border-zinc-800 flex items-center px-4 lg:hidden sticky top-0 z-10">
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400"
-          >
+          <button onClick={() => setIsSidebarOpen(true)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400">
             <Menu className="w-5 h-5" />
           </button>
           <span className="ml-4 font-semibold text-zinc-100">管理系统</span>

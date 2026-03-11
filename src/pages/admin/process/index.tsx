@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, ChevronRight, Edit2, Eye, FileText, Folder, FolderOpen, Image as ImageIcon, Loader2, Plus, Trash2, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import type { CatalogItem } from '../../../api/catalog';
+import { deleteProcess, type ProcessRecord } from '../../../api/process';
 import { useCatalogStore } from '../../../store/catalogStore';
 import { useProcessStore } from '../../../store/processStore';
-import { CatalogItem } from '../../../api/catalog';
-import { ProcessRecord, deleteProcess } from '../../../api/process';
-import { Plus, Edit2, Trash2, Image as ImageIcon, Loader2, ChevronRight, ChevronDown, FileText, FolderOpen, Folder, Eye, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 
 export default function ProcessPage() {
   const { catalogs, fetchCatalogs, selectedCatalogId, setSelectedCatalogId } = useCatalogStore();
@@ -17,13 +17,37 @@ export default function ProcessPage() {
 
   useEffect(() => {
     fetchCatalogs();
-  }, []);
+  }, [fetchCatalogs]);
 
   useEffect(() => {
     if (selectedCatalogId) {
       fetchProcesses(selectedCatalogId);
     }
-  }, [selectedCatalogId]);
+  }, [selectedCatalogId, fetchProcesses]);
+
+  // 自动展开包含selectedCatalogId的目录
+  useEffect(() => {
+    if (selectedCatalogId) {
+      const expandToCatalog = (items: CatalogItem[], targetId: number): void => {
+        for (const item of items) {
+          if (item.catalogId === targetId) {
+            return;
+          }
+          if (item.children && item.children.length > 0) {
+            const childHasTarget = item.children.some(child =>
+              child.catalogId === targetId ||
+              (child.children && child.children.some(grandchild => grandchild.catalogId === targetId))
+            );
+            if (childHasTarget) {
+              setExpandedIds(prev => new Set(prev).add(item.catalogId));
+              expandToCatalog(item.children, targetId);
+            }
+          }
+        }
+      };
+      expandToCatalog(catalogs, selectedCatalogId);
+    }
+  }, [selectedCatalogId, catalogs]);
 
   const toggleExpand = (id: number) => {
     const newExpanded = new Set(expandedIds);
@@ -44,7 +68,7 @@ export default function ProcessPage() {
         } else {
           alert('删除步骤失败');
         }
-      } catch (e) {
+      } catch (_e) {
         alert('删除步骤时发生错误');
       }
     }
@@ -70,22 +94,22 @@ export default function ProcessPage() {
                 }}
               >
                 {!isLeaf ? (
-                  isExpanded ? <ChevronDown className="w-4 h-4 text-zinc-500" /> : <ChevronRight className="w-4 h-4 text-zinc-500" />
+                  isExpanded ? (
+                    <ChevronDown className="w-4 h-4 text-zinc-500" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-zinc-500" />
+                  )
                 ) : (
                   <span className="w-4 h-4" />
                 )}
                 {isLeaf ? (
                   <FileText className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
+                ) : isExpanded ? (
+                  <FolderOpen className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
                 ) : (
-                  isExpanded ? (
-                    <FolderOpen className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
-                  ) : (
-                    <Folder className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
-                  )
+                  <Folder className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
                 )}
-                <span className={`text-sm ${isSelected ? 'font-medium text-indigo-300' : 'text-zinc-300'}`}>
-                  {item.catalogName}
-                </span>
+                <span className={`text-sm ${isSelected ? 'font-medium text-indigo-300' : 'text-zinc-300'}`}>{item.catalogName}</span>
               </div>
               {isExpanded && !isLeaf && renderTree(item.children as CatalogItem[], level + 1)}
             </li>
@@ -101,11 +125,7 @@ export default function ProcessPage() {
       <div className="w-64 bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex flex-col shrink-0">
         <h2 className="text-sm font-semibold text-zinc-100 mb-4 uppercase tracking-wider">选择目录</h2>
         <div className="flex-1 overflow-y-auto pr-2">
-          {catalogs.length === 0 ? (
-            <p className="text-sm text-zinc-500 text-center mt-4">暂无目录。</p>
-          ) : (
-            renderTree(catalogs)
-          )}
+          {catalogs.length === 0 ? <p className="text-sm text-zinc-500 text-center mt-4">暂无目录。</p> : renderTree(catalogs)}
         </div>
       </div>
 
@@ -114,9 +134,7 @@ export default function ProcessPage() {
         <div className="flex items-center justify-between mb-6 shrink-0">
           <div>
             <h1 className="text-2xl font-semibold text-zinc-100">步骤管理</h1>
-            <p className="text-sm text-zinc-400 mt-1">
-              {selectedCatalogId ? '管理所选目录的步骤。' : '请在左侧选择一个子目录以管理其步骤。'}
-            </p>
+            <p className="text-sm text-zinc-400 mt-1">{selectedCatalogId ? '管理所选目录的步骤。' : '请在左侧选择一个子目录以管理其步骤。'}</p>
           </div>
           <button
             onClick={() => navigate(`/admin/process/edit?catalogId=${selectedCatalogId}`)}
@@ -146,15 +164,23 @@ export default function ProcessPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {processes.map((process) => (
-                <div key={process.processDetailId} className="group relative bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden hover:shadow-xl hover:shadow-black/40 transition-all duration-300 aspect-[4/3]">
+                <div
+                  key={process.processDetailId}
+                  className="group relative bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden hover:shadow-xl hover:shadow-black/40 transition-all duration-300 aspect-[4/3]"
+                >
                   {process.newImageUrl ? (
-                    <img src={process.newImageUrl} alt="Process" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" referrerPolicy="no-referrer" />
+                    <img
+                      src={process.newImageUrl}
+                      alt="Process"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      referrerPolicy="no-referrer"
+                    />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-zinc-900 text-zinc-600">
                       <ImageIcon className="w-12 h-12 opacity-50" />
                     </div>
                   )}
-                  
+
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80" />
 
@@ -194,7 +220,10 @@ export default function ProcessPage() {
                         步骤 {process.sortFiled}
                       </span>
                       {process.tags?.slice(0, 2).map((tag, idx) => (
-                        <span key={idx} className="px-2.5 py-1 bg-white/10 text-zinc-300 text-xs font-medium rounded-lg backdrop-blur-md border border-white/5">
+                        <span
+                          key={idx}
+                          className="px-2.5 py-1 bg-white/10 text-zinc-300 text-xs font-medium rounded-lg backdrop-blur-md border border-white/5"
+                        >
                           {tag}
                         </span>
                       ))}
@@ -209,18 +238,18 @@ export default function ProcessPage() {
       {/* Fullscreen Preview Modal */}
       <AnimatePresence>
         {isPreviewOpen && previewProcess && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-8 backdrop-blur-sm" 
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-8 backdrop-blur-sm"
             onClick={() => setIsPreviewOpen(false)}
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="flex w-full max-w-6xl h-full max-h-[85vh] bg-zinc-900 rounded-2xl overflow-hidden shadow-2xl border border-zinc-800" 
+              className="flex w-full max-w-6xl h-full max-h-[85vh] bg-zinc-900 rounded-2xl overflow-hidden shadow-2xl border border-zinc-800"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Left: Steps */}
@@ -228,29 +257,30 @@ export default function ProcessPage() {
                 <div className="text-white">
                   {Array.from({ length: Math.max(previewProcess.titles?.length || 0, previewProcess.descriptions?.length || 0) }).map((_, index) => (
                     <div key={index} className="mb-6">
-                      <h3 className="text-lg font-bold mb-2">
-                        {previewProcess.titles?.[index] || `步骤 ${index + 1}`}
-                      </h3>
+                      <h3 className="text-lg font-bold mb-2">{previewProcess.titles?.[index] || `步骤 ${index + 1}`}</h3>
                       <div className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
                         {previewProcess.descriptions?.[index] || '暂无描述'}
                       </div>
                     </div>
                   ))}
-                  {(!previewProcess.titles?.length && !previewProcess.descriptions?.length) && (
+                  {!previewProcess.titles?.length && !previewProcess.descriptions?.length && (
                     <div className="text-zinc-500 text-sm">暂无步骤信息</div>
                   )}
                 </div>
               </div>
               {/* Right: Image */}
               <div className="flex-1 flex items-center justify-center pb-4 bg-[#060606] relative">
-                <img 
-                  src={previewProcess.newImageUrl || previewProcess.imageUrl} 
-                  className="w-full h-full object-contain object-top-left" 
+                <img
+                  src={previewProcess.newImageUrl || previewProcess.imageUrl}
+                  className="w-full h-full object-contain object-top-left"
                   referrerPolicy="no-referrer"
                 />
               </div>
             </motion.div>
-            <button className="absolute top-6 right-6 text-zinc-400 hover:text-white bg-zinc-900/50 hover:bg-zinc-800 p-2 rounded-xl transition-all" onClick={() => setIsPreviewOpen(false)}>
+            <button
+              className="absolute top-6 right-6 text-zinc-400 hover:text-white bg-zinc-900/50 hover:bg-zinc-800 p-2 rounded-xl transition-all"
+              onClick={() => setIsPreviewOpen(false)}
+            >
               <X className="w-6 h-6" />
             </button>
           </motion.div>

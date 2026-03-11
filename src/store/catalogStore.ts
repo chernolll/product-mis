@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CatalogItem, queryCatalog } from '../api/catalog';
+import { type CatalogItem, queryCatalog } from '../api/catalog';
 
 interface CatalogState {
   catalogs: CatalogItem[];

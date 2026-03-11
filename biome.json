@@ -18,8 +18,9 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "a11y": {
-        "useButtonType": "off"
+      "a11y": "off",
+      "correctness": {
+        "useExhaustiveDependencies": "off"
       },
       "suspicious": {
         "noExplicitAny": "off",

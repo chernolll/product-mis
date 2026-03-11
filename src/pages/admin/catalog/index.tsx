@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { ChevronDown, ChevronRight, Edit2, FileText, Folder, FolderOpen, FolderTree, Loader2, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { addCatalog, type CatalogItem, deleteCatalog, updateCatalog } from '../../../api/catalog';
 import { useCatalogStore } from '../../../store/catalogStore';
-import { CatalogItem, addCatalog, updateCatalog, deleteCatalog } from '../../../api/catalog';
-import { Folder, FolderOpen, FileText, Plus, Edit2, Trash2, ChevronRight, ChevronDown, Loader2, FolderTree } from 'lucide-react';
 
 export default function CatalogPage() {
   const { catalogs, loading, fetchCatalogs, selectedCatalogId, setSelectedCatalogId } = useCatalogStore();
@@ -13,7 +13,7 @@ export default function CatalogPage() {
 
   useEffect(() => {
     fetchCatalogs();
-  }, []);
+  }, [fetchCatalogs]);
 
   const toggleExpand = (id: number) => {
     const newExpanded = new Set(expandedIds);
@@ -44,8 +44,8 @@ export default function CatalogPage() {
   };
 
   const handleDelete = async (id: number) => {
-    const catalogToDelete = catalogs.find(c => c.catalogId === id) || findCatalog(catalogs, id);
-    if (catalogToDelete && catalogToDelete.children && catalogToDelete.children.length > 0) {
+    const catalogToDelete = catalogs.find((c) => c.catalogId === id) || findCatalog(catalogs, id);
+    if (catalogToDelete?.children && catalogToDelete.children.length > 0) {
       alert('不能删除包含子目录的目录。');
       return;
     }
@@ -129,22 +129,22 @@ export default function CatalogPage() {
                   }}
                 >
                   {!isLeaf ? (
-                    isExpanded ? <ChevronDown className="w-4 h-4 text-zinc-500" /> : <ChevronRight className="w-4 h-4 text-zinc-500" />
+                    isExpanded ? (
+                      <ChevronDown className="w-4 h-4 text-zinc-500" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4 text-zinc-500" />
+                    )
                   ) : (
                     <span className="w-4 h-4" />
                   )}
                   {isLeaf ? (
                     <FileText className={`w-5 h-5 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
+                  ) : isExpanded ? (
+                    <FolderOpen className={`w-5 h-5 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
                   ) : (
-                    isExpanded ? (
-                      <FolderOpen className={`w-5 h-5 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
-                    ) : (
-                      <Folder className={`w-5 h-5 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
-                    )
+                    <Folder className={`w-5 h-5 ${isSelected ? 'text-indigo-400' : 'text-zinc-500'}`} />
                   )}
-                  <span className={`text-sm ${isSelected ? 'font-medium text-indigo-300' : 'text-zinc-300'}`}>
-                    {item.catalogName}
-                  </span>
+                  <span className={`text-sm ${isSelected ? 'font-medium text-indigo-300' : 'text-zinc-300'}`}>{item.catalogName}</span>
                 </div>
 
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -225,9 +225,7 @@ export default function CatalogPage() {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-zinc-900 rounded-2xl shadow-xl border border-zinc-800 w-full max-w-md p-6">
-            <h2 className="text-lg font-semibold text-zinc-100 mb-4">
-              {modalMode === 'add' ? '添加目录' : '编辑目录'}
-            </h2>
+            <h2 className="text-lg font-semibold text-zinc-100 mb-4">{modalMode === 'add' ? '添加目录' : '编辑目录'}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-zinc-300 mb-1">目录名称</label>
