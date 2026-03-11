@@ -14,7 +14,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex">
+    <div className="h-screen bg-zinc-950 flex overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {!isSidebarOpen && <div className="fixed inset-0 bg-black/50 z-20 lg:hidden" onClick={() => setIsSidebarOpen(true)} />}
 
@@ -75,12 +75,12 @@ export default function AdminLayout() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-zinc-900 border-b border-zinc-800 flex items-center px-4 lg:hidden sticky top-0 z-10">
-          <button onClick={() => setIsSidebarOpen(true)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400">
+        {/* <header className="h-16 bg-zinc-900 border-b border-zinc-800 flex items-center px-4 lg:hidden sticky top-0 z-10">
+          <button type="button" onClick={() => setIsSidebarOpen(true)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400">
             <Menu className="w-5 h-5" />
           </button>
           <span className="ml-4 font-semibold text-zinc-100">管理系统</span>
-        </header>
+        </header> */}
         <div className="flex-1 p-6 overflow-hidden">
           <Outlet />
         </div>

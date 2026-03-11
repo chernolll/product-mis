@@ -53,9 +53,6 @@ export default function ProcessEditPage() {
   // Left Panel: Titles & Descriptions
   const [steps, setSteps] = useState<{ title: string; description: string }[]>([{ title: '', description: '' }]);
 
-  // Right Panel: Tags & Sort & Upload & Preview
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState('');
   const [sortField, setSortField] = useState(1);
   const [originalImage, setOriginalImage] = useState<File | null>(null);
   const [originalImageUrl, setOriginalImageUrl] = useState<string>('');
@@ -90,7 +87,6 @@ export default function ProcessEditPage() {
             }
             setSteps(newSteps);
           }
-          setTags(process.tags || []);
           setSortField(process.sortFiled || 1);
           setOriginalImageUrl(process.imageUrl || '');
           setPreviewUrl(process.newImageUrl || '');
@@ -305,7 +301,6 @@ export default function ProcessEditPage() {
         titles: steps.map((s) => s.title),
         descriptions: steps.map((s) => s.description),
         content: steps.map((s) => s.title).join('') + steps.map((s) => s.description).join(''),
-        tags: tags,
         catalogId: Number(catalogId),
         sortFiled: sortField,
         imageName: origImageName,
@@ -319,11 +314,9 @@ export default function ProcessEditPage() {
         const res = await addProcess(payload);
         if (!res.isSuccess) throw new Error(res.message || '添加步骤失败');
       }
-
-      navigate('/admin/process');
     } catch (e: any) {
       console.error(e);
-      alert(e.message || '保存步骤失败');
+      alert('保存步骤失败');
     } finally {
       setSaving(false);
     }
@@ -373,6 +366,7 @@ export default function ProcessEditPage() {
           <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-950">
             <h2 className="font-semibold text-zinc-100">步骤文案</h2>
             <button
+              type="button"
               onClick={() => setSteps([...steps, { title: '', description: '' }])}
               className="text-indigo-400 hover:text-indigo-300 p-1 hover:bg-indigo-500/20 rounded transition-colors"
             >
@@ -626,8 +620,24 @@ export default function ProcessEditPage() {
           </div>
         </div>
 
-        {/* Right Panel: Upload & Preview & Tags & Sort */}
+        {/* Right Panel: Sort & Upload & Preview */}
         <div className="w-80 border-l border-zinc-800 flex flex-col bg-zinc-900 shrink-0 p-6 overflow-y-auto space-y-8 custom-scrollbar">
+          {/* Sort */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-300 mb-3">排序</label>
+            <select
+              value={sortField}
+              onChange={(e) => setSortField(Number(e.target.value))}
+              className="w-full px-3 py-2.5 bg-zinc-950 text-zinc-100 border border-zinc-800 rounded-xl text-sm outline-none focus:border-indigo-500 transition-colors appearance-none"
+            >
+              {sortOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  第 {opt} 步
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Upload */}
           <div>
             <div className="flex justify-between items-center mb-3">
@@ -701,50 +711,7 @@ export default function ProcessEditPage() {
             </div>
           </div>
 
-          {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-3">标签</label>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {tags.map((tag, i) => (
-                <span key={i} className="px-2.5 py-1 bg-zinc-800 text-zinc-300 text-xs rounded-lg flex items-center gap-1.5 border border-zinc-700">
-                  {tag}
-                  <button onClick={() => setTags(tags.filter((_, idx) => idx !== i))} className="hover:text-red-400 transition-colors">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
-            <input
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && tagInput.trim()) {
-                  if (!tags.includes(tagInput.trim())) {
-                    setTags([...tags, tagInput.trim()]);
-                  }
-                  setTagInput('');
-                }
-              }}
-              placeholder="输入标签后按回车"
-              className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 text-sm outline-none focus:border-indigo-500 transition-colors"
-            />
-          </div>
-
-          {/* Sort */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-3">排序</label>
-            <select
-              value={sortField}
-              onChange={(e) => setSortField(Number(e.target.value))}
-              className="w-full px-3 py-2.5 bg-zinc-950 text-zinc-100 border border-zinc-800 rounded-xl text-sm outline-none focus:border-indigo-500 transition-colors appearance-none"
-            >
-              {sortOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  第 {opt} 步
-                </option>
-              ))}
-            </select>
-          </div>
+          
         </div>
       </div>
 

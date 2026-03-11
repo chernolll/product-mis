@@ -35,7 +35,7 @@ export default function ProcessPage() {
           }
           if (item.children && item.children.length > 0) {
             const childHasTarget = item.children.some(
-              (child) => child.catalogId === targetId || (child.children?.some((grandchild) => grandchild.catalogId === targetId)),
+              (child) => child.catalogId === targetId || child.children?.some((grandchild) => grandchild.catalogId === targetId),
             );
             if (childHasTarget) {
               setExpandedIds((prev) => new Set(prev).add(item.catalogId));
@@ -119,11 +119,11 @@ export default function ProcessPage() {
   };
 
   return (
-    <div className="h-full flex gap-6">
+    <div className="h-screen flex gap-6 overflow-hidden">
       {/* Sidebar for Catalog Selection */}
       <div className="w-64 bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex flex-col shrink-0">
         <h2 className="text-sm font-semibold text-zinc-100 mb-4 uppercase tracking-wider">选择目录</h2>
-        <div className="flex-1 overflow-y-auto pr-2">
+        <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
           {catalogs.length === 0 ? <p className="text-sm text-zinc-500 text-center mt-4">暂无目录。</p> : renderTree(catalogs)}
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function ProcessPage() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           {!selectedCatalogId ? (
             <div className="flex flex-col items-center justify-center h-full text-zinc-500">
               <FolderOpen className="w-12 h-12 mb-4 opacity-20" />
@@ -219,14 +219,6 @@ export default function ProcessPage() {
                       <span className="px-2.5 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-medium rounded-lg backdrop-blur-md border border-indigo-500/20">
                         步骤 {process.sortFiled}
                       </span>
-                      {process.tags?.slice(0, 2).map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2.5 py-1 bg-white/10 text-zinc-300 text-xs font-medium rounded-lg backdrop-blur-md border border-white/5"
-                        >
-                          {tag}
-                        </span>
-                      ))}
                     </div>
                   </div>
                 </div>

@@ -38,7 +38,6 @@ export const addProcess = async (data: {
   titles: string[];
   descriptions: string[];
   content?: string;
-  tags: string[];
   catalogId: number;
   sortFiled: number;
 }) => {
@@ -51,7 +50,6 @@ export const updateProcess = async (data: {
   titles: string[];
   descriptions: string[];
   content?: string;
-  tags: string[];
   imageName: string;
   newImageName: string;
   sortFiled: number;

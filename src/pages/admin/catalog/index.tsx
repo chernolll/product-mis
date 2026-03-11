@@ -80,6 +80,10 @@ export default function CatalogPage() {
 
   const handleSave = async () => {
     if (!catalogName.trim()) return;
+    if (catalogName.trim().length > 10) {
+      alert('目录名称最多10个字符');
+      return;
+    }
     try {
       if (modalMode === 'add') {
         const res = await addCatalog({
@@ -90,18 +94,22 @@ export default function CatalogPage() {
         if (res.isSuccess) {
           setIsModalOpen(false);
           fetchCatalogs();
+        } else {
+          alert(res?.message || '操作失败');
         }
       } else {
         const res = await updateCatalog({
-          catalogId: currentCatalog.catalogId!,
+          catalogId: currentCatalog.catalogId,
           catalogName: catalogName.trim(),
         });
         if (res.isSuccess) {
           setIsModalOpen(false);
           fetchCatalogs();
+        } else {
+          alert(res?.message || '操作失败');
         }
       }
-    } catch (e) {
+    } catch (_e) {
       alert('保存目录时发生错误');
     }
   };
@@ -236,6 +244,7 @@ export default function CatalogPage() {
                   className="w-full px-3 py-2 bg-zinc-950 text-zinc-100 border border-zinc-800 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none placeholder:text-zinc-600"
                   placeholder="请输入名称"
                   autoFocus
+                  maxLength={10}
                 />
               </div>
               <div className="flex justify-end gap-3 mt-6">
