@@ -332,23 +332,23 @@ export default function ProcessEditPage() {
   const activeElement = elements.find((e) => e.id === activeElementId);
   const sortOptions = Array.from({ length: processId ? processes.length : processes.length + 1 }, (_, i) => i + 1);
 
-  useEffect(() => {
-    if (!naturalSize) return;
-    const t = setInterval(() => {
-      generatePreview();
-    }, 1000);
-    generatePreview();
-    return () => {
-      clearInterval(t);
-    };
-  }, [naturalSize, generatePreview]);
+  // useEffect(() => {
+  //   if (!naturalSize) return;
+  //   const t = setInterval(() => {
+  //     generatePreview();
+  //   }, 1000);
+  //   generatePreview();
+  //   return () => {
+  //     clearInterval(t);
+  //   };
+  // }, [naturalSize, generatePreview]);
 
   return (
     <div className="h-full flex flex-col bg-zinc-950 text-white">
       {/* Top Header */}
       <div className="flex items-center justify-between p-6 border-b border-zinc-800 shrink-0 bg-zinc-950">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/admin/process')} className="p-2 hover:bg-zinc-900 rounded-xl transition-colors">
+          <button type="button" onClick={() => navigate('/admin/process')} className="p-2 hover:bg-zinc-900 rounded-xl transition-colors">
             <ArrowLeft className="w-5 h-5 text-zinc-400" />
           </button>
           <div>

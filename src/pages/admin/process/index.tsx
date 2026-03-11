@@ -34,12 +34,11 @@ export default function ProcessPage() {
             return;
           }
           if (item.children && item.children.length > 0) {
-            const childHasTarget = item.children.some(child =>
-              child.catalogId === targetId ||
-              (child.children && child.children.some(grandchild => grandchild.catalogId === targetId))
+            const childHasTarget = item.children.some(
+              (child) => child.catalogId === targetId || (child.children?.some((grandchild) => grandchild.catalogId === targetId)),
             );
             if (childHasTarget) {
-              setExpandedIds(prev => new Set(prev).add(item.catalogId));
+              setExpandedIds((prev) => new Set(prev).add(item.catalogId));
               expandToCatalog(item.children, targetId);
             }
           }
@@ -137,6 +136,7 @@ export default function ProcessPage() {
             <p className="text-sm text-zinc-400 mt-1">{selectedCatalogId ? '管理所选目录的步骤。' : '请在左侧选择一个子目录以管理其步骤。'}</p>
           </div>
           <button
+            type="button"
             onClick={() => navigate(`/admin/process/edit?catalogId=${selectedCatalogId}`)}
             disabled={!selectedCatalogId}
             className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
